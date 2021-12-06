@@ -18,23 +18,36 @@ router.get('/', function(req, res, next) {
 
           //TODO render not json
           if (jobs) {
-              console.log("got from cache")
               // res.render("account", {title: 'title'});
-              // res.render('index', { title: 'longwei' });
-              res.status(200).send({
-                  jobs: JSON.parse(jobs),
-                  message: "data retrieved from the cache"
-              });
+              console.log(Array.isArray(JSON.parse(jobs)))
+              const demo = {
+                postId: 1,
+                id: 1,
+                name: 'id labore ex et quam laborum',
+                email: 'Eliseo@gardner.biz',
+                body: 'laudantium enim quasi est quidem magnam voluptate ipsam eos\n' +
+                  'tempora quo necessitatibus\n' +
+                  'dolor quam autem quasi\n' +
+                  'reiciendis et nam sapiente accusantium',
+                array: JSON.parse(jobs)
+              };
+              console.log(demo)
+              console.log(JSON.parse(jobs)[0]);
+              res.render('account', demo);
+              // res.status(200).send({
+              //     jobs: JSON.parse(jobs),
+              //     message: "data retrieved from the cache"
+              // });
           }
           else {
               console.log("cache miss")
               const jobs = await axios.get(`https://jsonplaceholder.typicode.com/posts/1/comments`);
-              client.setex(searchTerm, 60, JSON.stringify(jobs.data));
-              // res.render('index', { title: 'longwei' });
-              res.status(200).send({
-                  jobs: jobs.data,
-                  message: "cache miss"
-              });
+              client.setex(searchTerm, 100000, JSON.stringify(jobs.data));
+              res.render('account', { title: 'cache miss' });
+              // res.status(200).send({
+              //     jobs: jobs.data,
+              //     message: "cache miss"
+              // });
           }
       });
   } catch (err) {

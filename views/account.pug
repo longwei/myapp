@@ -1,11 +1,11 @@
 extends layout
 
 block content
-    form(role='form' method='post' action='http://localhost:3000/users/'+postId)
+    form(role='form' method='post' action='http://localhost:3000/users/123')
         div.actions
-            input(type="submit", value="add")
+            input(type="submit", value="refresh")
 
     h1= postId
-    h1= name
+    h1= "acount refresh"
     ul: each val, index in array
       li #{index + 1}: #{val.name}

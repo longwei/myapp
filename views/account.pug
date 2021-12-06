@@ -1,9 +1,11 @@
 extends layout
 
 block content
+    form(role='form' method='post' action='http://localhost:3000/users/'+postId)
+        div.actions
+            input(type="submit", value="add")
+
     h1= postId
     h1= name
-    h1= email
-    h1= body
     ul: each val, index in array
       li #{index + 1}: #{val.name}

@@ -10,7 +10,7 @@ const client = new Redis({
 });
 
 router.get('/', function(req, res, next) {
-  console.log(req.query.title)
+  console.log("??=>"+req.query.title)
   const searchTerm = req.query.title
   try {
       client.get(searchTerm, async (err, jobs) => {
@@ -19,9 +19,9 @@ router.get('/', function(req, res, next) {
           //TODO render not json
           if (jobs) {
               // res.render("account", {title: 'title'});
-              console.log(Array.isArray(JSON.parse(jobs)))
+              // console.log(Array.isArray(JSON.parse(jobs)))
               const demo = {
-                postId: 1,
+                postId: searchTerm,
                 id: 1,
                 name: 'id labore ex et quam laborum',
                 email: 'Eliseo@gardner.biz',
@@ -31,8 +31,8 @@ router.get('/', function(req, res, next) {
                   'reiciendis et nam sapiente accusantium',
                 array: JSON.parse(jobs)
               };
-              console.log(demo)
-              console.log(JSON.parse(jobs)[0]);
+              // console.log(demo)
+              // console.log(JSON.parse(jobs)[0]);
               res.render('account', demo);
               // res.status(200).send({
               //     jobs: JSON.parse(jobs),
@@ -56,13 +56,9 @@ router.get('/', function(req, res, next) {
 });
 
 
-
-
-
-
 /* GET users listing. */
-// router.post('/', function(req, res, next) {
-//   console.log(req.body.title)
-//   res.send('fetching id' + req.body.title);
-// });
+router.post('/:id', function(req, res, next) {
+  console.log(req.params.id)
+  res.send('re--fetching id' + req.params.id);
+});
 module.exports = router;

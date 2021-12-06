@@ -56,9 +56,17 @@ router.get('/', function(req, res, next) {
 });
 
 
+
+/* GET users listing. */
+router.get('/:id', function(req, res, next) {
+  console.log(req.params.id)
+  res.send('soft pull id' + req.params.id);
+});
+
 /* GET users listing. */
 router.post('/:id', function(req, res, next) {
   console.log(req.params.id)
-  res.send('re--fetching id' + req.params.id);
+  res.send('hard pull id' + req.params.id);
 });
+
 module.exports = router;

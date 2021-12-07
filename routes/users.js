@@ -23,31 +23,24 @@ function fetchAndRender(searchTerm, res) {
         const demo = {
           postId: searchTerm,
           id: 1,
-          name: 'id labore ex et quam laborum',
-          email: 'Eliseo@gardner.biz',
-          body: 'laudantium enim quasi est quidem magnam voluptate ipsam eos\n' +
-            'tempora quo necessitatibus\n' +
-            'dolor quam autem quasi\n' +
-            'reiciendis et nam sapiente accusantium',
+          name: 'from cache',
           array: JSON.parse(jobs)
         };
-        // console.log(demo)
-        // console.log(JSON.parse(jobs)[0]);
         res.render('account', demo);
-        // res.status(200).send({
-        //     jobs: JSON.parse(jobs),
-        //     message: "data retrieved from the cache"
-        // });
       }
       else {
-        console.log("cache miss")
+        console.log("cache miss, pulling new data")
         const jobs = await axios.get(`https://jsonplaceholder.typicode.com/posts/1/comments`);
         client.setex(searchTerm, 100000, JSON.stringify(jobs.data));
-        res.render('account', { title: 'cache miss' });
-        // res.status(200).send({
-        //     jobs: jobs.data,
-        //     message: "cache miss"
-        // });
+
+        // console.log(jobs.data);
+        const demo = {
+          postId: searchTerm,
+          id: 1,
+          name: 'hardpull',
+          array: jobs.data
+        };
+        res.render('account', demo);
       }
     });
   } catch (err) {
@@ -62,20 +55,23 @@ router.get('/', function (req, res, next) {
   fetchAndRender(searchTerm, res)
 });
 
-
-
-/* GET users listing. */
 router.get('/:id', function (req, res, next) {
   console.log(req.params.id)
   const searchTerm = req.params.id;
   fetchAndRender(searchTerm, res)
-  // res.send('soft pull id' + req.params.id);
 });
 
-/* GET users listing. */
 router.post('/:id', function (req, res, next) {
   console.log(req.params.id)
-  res.send('hard pull id' + req.params.id);
+  const searchTerm = req.params.id;
+  client.del(searchTerm, (error, result)=>{
+    if (error) {
+      console.log(error)
+      return;
+    }
+    console.log(result);
+    fetchAndRender(searchTerm, res);
+  });
 });
 
 module.exports = router;

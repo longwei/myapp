@@ -4,7 +4,6 @@ const Redis = require('ioredis');
 const fs = require('fs');
 
 var router = express.Router();
-//todo demo redis
 const client = new Redis({
   host: '127.0.0.1',
   port: 6379,
@@ -38,7 +37,6 @@ function filter(rawdata_tmp){
 
   recent_posts = []
   for (let step = 0; step < total; step++) {
-      // Runs 5 times, with values of step 0 through 4.
       const recent_post = ig.graphql.user.edge_owner_to_timeline_media.edges[step];
       const post = {
           post_id: recent_post.node.id,
@@ -50,8 +48,9 @@ function filter(rawdata_tmp){
       }
       recent_posts[step] = post
   }
+  const last_fetch_time_string = new Date().toLocaleString();
   let ret = {
-      last_fetch: Date.now(),
+      last_fetch: last_fetch_time_string,
       accountInfo:account,
       posts:recent_posts
   }
@@ -68,12 +67,13 @@ function softPullAndResponse(handler, res) {
         res.status(200).send(jobs);
       }
       else {
+        // fetch json from 
         const jobs = await axios.get(igapi);
-        console.log(jobs);
+        // console.log(jobs);
 
-        const filtered_JSON = filter("return json")
+        // fetch json from local file
+        const filtered_JSON = filter("from local json")
         client.setex(searchTerm, 10, JSON.stringify(filtered_JSON));
-        console.log("hard pull")
         res.status(200).send(filtered_JSON);
       }
     });
